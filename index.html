@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#090d18">
+  <meta name="description" content="Infinite Arena — the competitive puzzle arena.">
+  <title>Infinite Arena — Merge without limits</title>
+  <link href="style/main.css" rel="stylesheet" type="text/css">
+  <link href="style/arena.css" rel="stylesheet" type="text/css">
+  <link rel="shortcut icon" href="favicon.ico">
+</head>
+<body>
+  <div class="container arena">
+    <header class="topbar">
+      <a class="brand" href="#" aria-label="Infinite Arena home">
+        <span class="brand-mark" aria-hidden="true">∞</span>
+        <span>INFINITE <strong>ARENA</strong></span>
+      </a>
+      <div class="topbar-actions">
+        <span class="connection-status" id="connection-status"><i></i> LOCAL ARENA</span>
+        <button class="icon-button" id="sound-toggle" type="button" aria-label="Toggle sound" title="Toggle sound">◖))</button>
+        <button class="icon-button" id="theme-toggle" type="button" aria-label="Toggle light theme" title="Toggle theme">☼</button>
+        <button class="account-button" id="account-button" type="button">Sign in</button>
+      </div>
+    </header>
+
+    <main class="arena-layout">
+      <section class="game-panel glass-panel" aria-label="2048 game">
+        <div class="game-header">
+          <div>
+            <div class="eyebrow"><span class="live-dot"></span> SEASON 01 <span class="eyebrow-divider">/</span> OPEN PLAY</div>
+            <h1>ARENA <span>∞</span></h1>
+            <p class="game-intro">Merge tiles. Climb forever.</p>
+          </div>
+          <div class="rank-pill" id="rank-pill"><span>◇</span><span id="global-rank">UNRANKED</span></div>
+        </div>
+
+        <div class="mode-picker" role="group" aria-label="Choose game mode">
+          <button class="mode-button active" type="button" data-mode="infinite">Infinite</button>
+          <button class="mode-button" type="button" data-mode="classic">Classic</button>
+          <button class="mode-button" type="button" data-mode="timed">2 min</button>
+          <button class="mode-button" type="button" data-mode="daily">Daily</button>
+        </div>
+
+        <div class="score-row">
+          <div class="score-card score-card-primary">
+            <span class="score-label">CURRENT SCORE</span>
+            <strong class="score-container" aria-live="polite">0</strong>
+          </div>
+          <div class="score-card">
+            <span class="score-label">PERSONAL BEST</span>
+            <strong class="best-container">0</strong>
+          </div>
+          <div class="score-card timer-card" id="timer-card" hidden>
+            <span class="score-label">TIME LEFT</span>
+            <strong id="timer-value">02:00</strong>
+          </div>
+        </div>
+
+        <div class="game-container" role="application" aria-label="2048 tile board">
+          <div class="game-message">
+            <p></p>
+            <div class="lower">
+              <a class="keep-playing-button" href="#">Keep playing</a>
+              <button class="retry-button primary-button" type="button">Play Again <span aria-hidden="true">↻</span></button>
+            </div>
+          </div>
+          <div class="grid-container" aria-hidden="true">
+            <div class="grid-row"><div class="grid-cell"></div><div class="grid-cell"></div><div class="grid-cell"></div><div class="grid-cell"></div><div class="grid-cell"></div><div class="grid-cell"></div></div>
+            <div class="grid-row"><div class="grid-cell"></div><div class="grid-cell"></div><div class="grid-cell"></div><div class="grid-cell"></div><div class="grid-cell"></div><div class="grid-cell"></div></div>
+            <div class="grid-row"><div class="grid-cell"></div><div class="grid-cell"></div><div class="grid-cell"></div><div class="grid-cell"></div><div class="grid-cell"></div><div class="grid-cell"></div></div>
+            <div class="grid-row"><div class="grid-cell"></div><div class="grid-cell"></div><div class="grid-cell"></div><div class="grid-cell"></div><div class="grid-cell"></div><div class="grid-cell"></div></div>
+            <div class="grid-row"><div class="grid-cell"></div><div class="grid-cell"></div><div class="grid-cell"></div><div class="grid-cell"></div><div class="grid-cell"></div><div class="grid-cell"></div></div>
+            <div class="grid-row"><div class="grid-cell"></div><div class="grid-cell"></div><div class="grid-cell"></div><div class="grid-cell"></div><div class="grid-cell"></div><div class="grid-cell"></div></div>
+          </div>
+          <div class="tile-container" aria-live="polite" aria-label="Game tiles"></div>
+        </div>
+
+        <div class="game-controls">
+          <button class="secondary-button" id="undo-button" type="button" title="Undo last move">↶ <span>Undo</span></button>
+          <span class="keyboard-hint">USE <kbd>←</kbd><kbd>↑</kbd><kbd>→</kbd><kbd>↓</kbd> OR SWIPE</span>
+          <button class="primary-button restart-button" type="button">New run <span>↻</span></button>
+        </div>
+        <p class="mode-note" id="mode-note">Ranked run · every move counts</p>
+      </section>
+
+      <aside class="leaderboard-panel glass-panel" aria-label="Global leaderboard">
+        <div class="leaderboard-header">
+          <div>
+            <div class="eyebrow"><span class="live-dot"></span> LIVE RANKINGS</div>
+            <h2>Leaderboard</h2>
+          </div>
+          <button id="refresh-leaderboard" class="refresh-button" type="button" aria-label="Refresh leaderboard">↻</button>
+        </div>
+        <div class="leaderboard-tabs" role="group" aria-label="Leaderboard mode">
+          <button class="leaderboard-tab active" data-board-mode="infinite" type="button">Infinite</button>
+          <button class="leaderboard-tab" data-board-mode="timed" type="button">Timed</button>
+          <button class="leaderboard-tab" data-board-mode="daily" type="button">Daily</button>
+        </div>
+        <ol class="leaderboard-list" id="leaderboard-list" aria-live="polite"></ol>
+        <div class="my-rank-card" id="my-rank-card" hidden>
+          <div class="my-rank-position" id="my-rank-value">—</div>
+          <div class="my-rank-details">
+            <span class="my-rank-label">YOUR POSITION</span>
+            <strong id="my-rank-name">YOU</strong>
+          </div>
+          <strong class="my-rank-score" id="my-rank-score">0</strong>
+        </div>
+        <div class="leaderboard-footer">
+          <span class="champion-sparkle">✦</span>
+          <span>Top score takes the crown.</span>
+        </div>
+        <button class="leaderboard-mobile-toggle" id="leaderboard-mobile-toggle" type="button" aria-expanded="false">View leaderboard <span>⌄</span></button>
+      </aside>
+    </main>
+
+    <footer class="arena-footer">
+      <span>INFINITE ARENA <span class="footer-dot">·</span> MERGE WITHOUT LIMITS</span>
+      <span id="save-status">Game autosaves on this device</span>
+    </footer>
+  </div>
+
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+  <div class="achievement-overlay" id="achievement-overlay" aria-hidden="true">
+    <div class="achievement-card"><span class="achievement-icon">✦</span><span class="achievement-kicker">ACHIEVEMENT UNLOCKED</span><strong>THE FIRST PEAK</strong><span>You reached 2048. Keep going.</span></div>
+  </div>
+  <div class="champion-overlay" id="champion-overlay" aria-hidden="true">
+    <div class="champion-burst">✦</div><div class="champion-kicker">THE ARENA HAS A NEW LEADER</div><h2>GLOBAL<br><span>CHAMPION</span></h2><p id="champion-player">A new legend rises.</p>
+  </div>
+
+  <dialog class="auth-dialog" id="auth-dialog">
+    <form id="auth-form">
+      <button class="dialog-close" id="close-auth" type="button" aria-label="Close">×</button>
+      <div class="eyebrow">JOIN THE ARENA</div>
+      <h2>Play for rank.</h2>
+      <p>Sign in with a one-time email link to publish verified scores and compete globally.</p>
+      <label for="auth-username">Arena username</label>
+      <input id="auth-username" name="username" type="text" minlength="3" maxlength="20" autocomplete="nickname" placeholder="YourHandle" required>
+      <label for="auth-email">Email address</label>
+      <input id="auth-email" name="email" type="email" autocomplete="email" placeholder="you@example.com" required>
+      <button class="primary-button auth-submit" type="submit">Send sign-in link <span>→</span></button>
+      <p class="auth-message" id="auth-message" role="status"></p>
+    </form>
+  </dialog>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="js/config.js"></script>
+  <script src="js/bind_polyfill.js"></script>
+  <script src="js/classlist_polyfill.js"></script>
+  <script src="js/animframe_polyfill.js"></script>
+  <script src="js/keyboard_input_manager.js"></script>
+  <script src="js/html_actuator.js"></script>
+  <script src="js/grid.js"></script>
+  <script src="js/tile.js"></script>
+  <script src="js/local_storage_manager.js"></script>
+  <script src="js/sound_manager.js"></script>
+  <script src="js/leaderboard_manager.js"></script>
+  <script src="js/game_manager.js"></script>
+  <script src="js/application.js"></script>
+</body>
+</html>
